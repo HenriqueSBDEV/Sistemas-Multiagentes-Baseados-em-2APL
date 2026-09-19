@@ -31,40 +31,35 @@
             <groupId>JIProlog</groupId>
             <artifactId>JIProlog</artifactId>
             <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/resources/jiprolog/JIProlog.jar</systemPath>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>http</groupId>
             <artifactId>http</artifactId>
             <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/resources/jade/http.jar</systemPath>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>iiop</groupId>
             <artifactId>iiop</artifactId>
             <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/resources/jade/iiop.jar</systemPath>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>jade</groupId>
             <artifactId>jade</artifactId>
             <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/resources/jade/jade.jar</systemPath>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>jadeTools</groupId>
             <artifactId>jadeTools</artifactId>
             <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/resources/jade/jadeTools.jar</systemPath>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
@@ -108,33 +103,44 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                            <archive>
+                                <manifest>
+                                    <mainClass>nl.uu.cs.is.apapl.APAPL</mainClass> <!-- Substitua pela sua classe principal -->
+                                </manifest>
+                            </archive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>   
+        
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.4</version>
                 <executions>
-                    <execution>
-                        <id>2APL</id>
-                        <goals><goal>jar</goal></goals>
-                        <phase>package</phase>
-                        <configuration>
-                            <finalName>2APL</finalName>
-                            <archive>
-                                <manifestFile>src/main/resources/META-INF/Manifest.txt</manifestFile>
-                            </archive>
-                            <excludes>
-                                <exclude>nl/uu/cs/is/apapl/environments/*</exclude>
-                            </excludes>
-                        </configuration>
-                    </execution>
-
                     <execution>
                         <id>blockworld-environment</id>
                         <goals><goal>jar</goal></goals>
                         <phase>package</phase>
                         <configuration>
                             <finalName>blockworld</finalName>
-                            <archive>
-                                <manifestFile>src/main/resources/META-INF/blockworld/Manifest.txt</manifestFile>
-                            </archive>
+			<archive>
+   				 <manifest>
+       					 <mainClass>nl.uu.cs.is.apapl.environments.blockworld.Env</mainClass>
+    				</manifest>
+			</archive>
                             <includes>
                                 <include>nl/uu/cs/is/apapl/environments/blockworld/*.class</include>
                                 <include>nl/uu/cs/is/apapl/environments/blockworld/lib/*</include>

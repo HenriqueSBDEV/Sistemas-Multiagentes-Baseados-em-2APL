@@ -7,7 +7,7 @@ beliefupdates:
   { not carry( bomb ) } PickUp( )       { carry( bomb ) }
 
 beliefs:
-  start(0,1).
+  start(5,5).
   clean( blockWorld ) :- not bomb(X,Y) , not carry(bomb).
 
 plans:
@@ -22,10 +22,10 @@ pgrules:
   {
     goto( X, Y );
     @blockworld( pickup( ), _ );
-	PickUp( );
-	RemoveBomb( X, Y );
+	  PickUp( );
+	  RemoveBomb( X, Y );
     goto( 0, 0 );
-	@blockworld( drop( ), _ );
+	  @blockworld( drop( ), _ );
     Drop( );
   }
 
