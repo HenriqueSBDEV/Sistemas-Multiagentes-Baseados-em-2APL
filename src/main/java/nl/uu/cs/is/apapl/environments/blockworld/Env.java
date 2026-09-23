@@ -57,6 +57,7 @@ public class Env extends Environment implements ObsVectListener {
 	// list of coordinates (Point) containing blocked areas
 	protected ObsVect _areasBloqueadas = new ObsVect();
 	// list of coordinates (Point) containing bombs
+	protected ObsVect _prohibited = new ObsVect();
 	protected ObsVect _bombs = new ObsVect();
 	// id for identifiable objects
 	protected String _objType = "default";
@@ -711,6 +712,21 @@ public class Env extends Environment implements ObsVectListener {
 		}
 	}
 
+	public synchronized TypeObject isProhibited(Point p) {
+		synchronized (_prohibited) {
+			Iterator i = _prohibited.iterator();
+
+			while (i.hasNext()) {
+				TypeObject area = (TypeObject) i.next();
+
+				if (p.equals(area.getPosition()))
+					return area;
+			}
+
+			return null;
+		}
+	}
+
 	// see if there is a trap at the specified coordinate
 	public synchronized TypeObject isTrap(Point p) {
 		synchronized (_traps) {
@@ -802,6 +818,26 @@ public class Env extends Environment implements ObsVectListener {
 		return false;
 	}
 
+	public synchronized boolean removeProhibited(Point position) {
+		synchronized (_prohibited) {
+			Iterator i = _prohibited.iterator();
+
+			while (i.hasNext()) {
+				if (position.equals(((TypeObject) i.next()).getPosition())) {
+					i.remove();
+
+					synchronized (this) {
+						notifyAll();
+					}
+
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
 	// remove trap at position
 	public synchronized boolean removeTrap(Point position) {
 		synchronized (_traps) {
@@ -857,6 +893,24 @@ public class Env extends Environment implements ObsVectListener {
 
 		synchronized (_areasBloqueadas) {
 			_areasBloqueadas.add(new TypeObject(_objType, position));
+		}
+
+		return true;
+	}
+
+	public synchronized boolean addProhibited(Point position) throws IndexOutOfBoundsException {
+
+		if (isOutOfBounds(position))
+			throw new IndexOutOfBoundsException("setProhibited out of range: "
+					+ position + ", " + m_size);
+
+		if (isBomb(position) != null || isStone(position) != null
+				|| isTrap(position) != null || isAreaBloqueada(position) != null
+				|| isProhibited(position) != null)
+			return false;
+
+		synchronized (_prohibited) {
+			_prohibited.add(new TypeObject(_objType, position));
 		}
 
 		return true;
@@ -1047,6 +1101,10 @@ public class Env extends Environment implements ObsVectListener {
 
 	public void addAreaBloqueadaListener(ObsVectListener o) {
 		_areasBloqueadas.addListener(o);
+	}
+
+	public void addProhibitedListener(ObsVectListener o) {
+		_prohibited.addListener(o);
 	}
 
 	// / This listener is notified upon changes regarding the Bombs list.

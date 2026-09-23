@@ -4,7 +4,7 @@ goals:
   search( blockWorld ).
 
 plans:
-  @blockworld( enter( 8, 8, red ), _ );
+  @blockworld( enter( 14, 15, red ), _ );
 
 pgrules:
   search( blockWorld ) <- true |

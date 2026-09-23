@@ -381,6 +381,7 @@ public class Window extends JFrame {
 		addButton("bomb.gif", "Place bombs", envView.tool.STATE_ADDBOMB, envView.tool);
 		addButton("stone.gif", "Place walls", envView.tool.STATE_ADDWALL, envView.tool);
 		addButton("trap.gif", "Place traps", envView.tool.STATE_ADDTRAP, envView.tool);
+		addButton("prohibited.gif", "Prohibited zone", envView.tool.STATE_ADDPROHIBITED, envView.tool);
 		addButton("eraser.gif", "Erase objects", envView.tool.STATE_REMOVE, envView.tool);
 		addButton("area_bloqueada.gif", "prohibited area", envView.tool.STATE_ADDAREA, envView.tool);
 		getContentPane().add(m_tbToolbar, BorderLayout.NORTH);

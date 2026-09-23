@@ -34,6 +34,7 @@ class EnvView extends JPanel implements ObsVectListener, Observer {
 	Image imgBomb = null;
 	Image imgTrap = null;
 	Image imgAreaBloqueada = null;
+	Image imgProhibited = null;
 
 	// Changed SA:
 	Image[] imgAgents = new Image[10];
@@ -55,6 +56,8 @@ class EnvView extends JPanel implements ObsVectListener, Observer {
 		final int STATE_ADDTRAP = 4;
 
 		final int STATE_ADDAREA = 5;
+
+		final int STATE_ADDPROHIBITED = 6;
 
 		int _state = STATE_SELECT;
 
@@ -143,6 +146,23 @@ class EnvView extends JPanel implements ObsVectListener, Observer {
 							_env.removeTrap(p);
 						if (_env.isAreaBloqueada(p) != null)
 							_env.removeAreaBloqueada(p);
+						if (_env.isProhibited(p) != null)
+							_env.removeProhibited(p);
+						break;
+					case STATE_ADDPROHIBITED:
+						if (_env.isStone(p) != null)
+							_env.removeStone(p);
+
+						if (_env.isBomb(p) != null)
+							_env.removeBomb(p);
+
+						if (_env.isTrap(p) != null)
+							_env.removeTrap(p);
+
+						if (_env.isAreaBloqueada(p) != null)
+							_env.removeAreaBloqueada(p);
+
+						_env.addProhibited(p);
 						break;
 				}
 			} catch (Exception error) {
@@ -341,6 +361,17 @@ class EnvView extends JPanel implements ObsVectListener, Observer {
 			xEx.printStackTrace();
 		}
 
+		try {
+			imgProhibited = createImage(
+					(ImageProducer) (this.getClass()
+							.getResource("images/toolbar/prohibited.gif")).getContent());
+
+		} catch (Exception xEx) {
+
+			xEx.printStackTrace();
+
+		}
+
 		_env.addAgentListener(new ObsVectListener() {
 			public void onAdd(int i, Object o) {
 				final Agent a = (Agent) o;
@@ -364,6 +395,7 @@ class EnvView extends JPanel implements ObsVectListener, Observer {
 		_env.addBombsListener(this);
 		_env.addTrapsListener(this);
 		_env.addAreaBloqueadaListener(this);
+		_env.addProhibitedListener(this);
 		_env.signalSenseRangeChanged.addObserver(this);
 		_env.signalSizeChanged.addObserver(this);
 		_env.signalTrapChanged.addObserver(this);
@@ -428,6 +460,24 @@ class EnvView extends JPanel implements ObsVectListener, Observer {
 								this);
 					}
 
+				}
+
+				// draw prohibited
+				if (_env.isProhibited(p) != null) {
+
+					if (imgProhibited == null) {
+						g.setColor(Color.black);
+						g.fillRect((int) (x * cw), (int) (y * ch),
+								(int) cw, (int) ch);
+
+					} else {
+						g.drawImage(imgProhibited,
+								(int) (x * cw + 1),
+								(int) (y * ch + 1),
+								(int) cw - 1,
+								(int) ch - 1,
+								this);
+					}
 				}
 
 				// draw bomb (red oval)

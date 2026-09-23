@@ -7,7 +7,7 @@ beliefupdates:
   { not carry( bomb ) } PickUp( )       { carry( bomb ) }
 
 beliefs:
-  start(5,5).
+  start(1,15).
   clean( blockWorld ) :- not bomb(X,Y) , not carry(bomb).
 
 plans:
